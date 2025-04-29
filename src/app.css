@@ -1,0 +1,114 @@
+@import 'tailwindcss';
+
+@theme {
+	/* Content color */
+	--color-primary: #ffffff;
+
+	/* Background color */
+	--color-secondary: #000000;
+}
+
+@layer base {
+	html {
+		@apply overflow-hidden;
+	}
+	html,
+	body {
+		/* Default colors */
+		background-color: var(--color-secondary);
+		color: var(--color-primary);
+
+		/* Global font */
+		font-family: 'Inter', sans-serif;
+		font-optical-sizing: auto;
+		font-weight: 400;
+		font-style: normal;
+	}
+	body {
+		@apply fixed inset-0 mx-auto max-w-[1280px] antialiased;
+	}
+
+	/* Link styling */
+	a {
+		@apply relative;
+	}
+	a::after {
+		@apply bg-primary absolute bottom-0 left-0 h-[1px] w-full transition-all duration-300 content-[''];
+	}
+	a:hover::after {
+		@apply w-0;
+	}
+
+	/* Font styling */
+	h1 {
+		@apply text-4xl font-bold;
+	}
+	h2 {
+		@apply text-3xl font-bold;
+	}
+	h3 {
+		@apply text-2xl font-bold;
+	}
+	p {
+		@apply text-base font-normal;
+	}
+
+	/* Main content grid */
+	main {
+		@apply grid h-full grid-cols-1 gap-3 overflow-y-auto px-3 pt-3 pb-20;
+		scrollbar-width: none;
+	}
+	main::-webkit-scrollbar {
+		display: none;
+	}
+
+	footer {
+		@apply absolute inset-x-3 bottom-5 text-center text-xs;
+	}
+}
+
+@layer components {
+	/* Button components */
+	.btn {
+		@apply bg-primary text-secondary border-primary hover:bg-secondary hover:text-primary disabled:border-primary/0 cursor-pointer rounded-full border px-5 py-3 transition-all duration-300 outline-none select-none focus:outline-none disabled:pointer-events-none disabled:cursor-default disabled:opacity-50;
+	}
+	.hold {
+		@apply relative overflow-hidden;
+	}
+	.hold.btn {
+		@apply hover:bg-secondary hover:text-primary bg-secondary text-primary;
+	}
+	.hold.btn:disabled {
+		@apply invert;
+	}
+	.hold .progress {
+		@apply bg-primary absolute top-0 bottom-0 left-0 z-0;
+		height: 100%;
+		width: 0%;
+	}
+	.outline {
+		@apply bg-primary/0! text-primary! hover:bg-primary/5!;
+	}
+	.outline:disabled {
+		@apply border-primary/50!;
+	}
+
+	/* Input components */
+	.input {
+		@apply border-primary/20 focus:ring-primary/20 ring-offset-secondary appearance-none rounded-full border bg-transparent px-5 py-3 ring-offset-2 outline-none focus:ring-2 focus:outline-none;
+		&:-webkit-autofill,
+		&:-webkit-autofill:hover,
+		&:-webkit-autofill:focus {
+			-webkit-text-fill-color: var(--color-primary);
+			-webkit-box-shadow: 0 0 0px 1000px var(--color-secondary) inset;
+			transition: background-color 5000s ease-in-out 0s;
+		}
+	}
+}
+
+@layer utilities {
+	/* Layout components */
+	.align-center {
+		@apply items-center justify-center;
+	}
+}
