@@ -15,10 +15,9 @@
 	html,
 	body {
 		/* Default colors */
-		background-color: var(--color-secondary);
-		color: var(--color-primary);
+		@apply bg-secondary text-primary;
 
-		/* Global font */
+		/* Google font */
 		font-family: 'Inter', sans-serif;
 		font-optical-sizing: auto;
 		font-weight: 400;
@@ -57,9 +56,10 @@
 	main {
 		@apply grid h-full grid-cols-1 gap-3 overflow-y-auto px-3 pt-3 pb-20;
 		scrollbar-width: none;
-	}
-	main::-webkit-scrollbar {
-		display: none;
+		-ms-overflow-style: none;
+		&:-webkit-scrollbar {
+			@apply hidden;
+		}
 	}
 
 	footer {
@@ -82,9 +82,7 @@
 		@apply invert;
 	}
 	.hold .progress {
-		@apply bg-primary absolute top-0 bottom-0 left-0 z-0;
-		height: 100%;
-		width: 0%;
+		@apply bg-primary absolute top-0 bottom-0 left-0 z-0 h-full w-0;
 	}
 	.outline {
 		@apply bg-primary/0! text-primary! hover:bg-primary/5!;
