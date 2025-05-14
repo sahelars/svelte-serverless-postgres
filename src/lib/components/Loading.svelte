@@ -1,9 +1,9 @@
 <script>
-	export let size = 24;
-	export let color = 'black';
+	let { classname = 'mix-blend-exclusion invert', size = 24, color = 'black' } = $props();
 </script>
 
 <svg
+	class={classname}
 	width={size}
 	height={size}
 	stroke={color}
