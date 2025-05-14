@@ -14,7 +14,7 @@
 	let showLoading = $state(false);
 
 	function startHolding() {
-		if (disabled && isError) return;
+		if (disabled || isError || showLoading) return;
 		isHolding = true;
 		showProgress = true;
 		holdProgress = 0;
@@ -90,7 +90,7 @@
 </script>
 
 <button
-	class={`btn hold ${classname}`}
+	class={`btn hold ${classname} ${showLoading ? 'cursor-default' : ''}`}
 	type="button"
 	onmousedown={startHolding}
 	onmouseup={stopHolding}
