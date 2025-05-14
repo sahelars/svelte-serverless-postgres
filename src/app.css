@@ -1,11 +1,12 @@
 @import 'tailwindcss';
 
-@theme {
-	/* Content color */
-	--color-primary: #ffffff;
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
-	/* Background color */
-	--color-secondary: #000000;
+@theme {
+	/* Color variables */
+	--color-primary: #000000;
+	--color-secondary: #ffffff;
+	--color-neutral: #808080;
 }
 
 @layer base {
@@ -14,8 +15,8 @@
 	}
 	html,
 	body {
-		/* Default colors */
-		@apply bg-secondary text-primary;
+		/* Default */
+		@apply dark:bg-primary dark:text-secondary bg-secondary text-primary;
 
 		/* Google font */
 		font-family: 'Inter', sans-serif;
@@ -33,6 +34,9 @@
 	}
 	a::after {
 		@apply bg-primary absolute bottom-0 left-0 h-[1px] w-full transition-all duration-300 content-[''];
+	}
+	[data-theme='dark'] a::after {
+		@apply bg-secondary absolute bottom-0 left-0 h-[1px] w-full transition-all duration-300 content-[''];
 	}
 	a:hover::after {
 		@apply w-0;
@@ -70,37 +74,46 @@
 @layer components {
 	/* Button components */
 	.btn {
-		@apply bg-primary text-secondary border-primary hover:bg-secondary hover:text-primary disabled:border-primary/0 cursor-pointer rounded-full border px-5 py-3 transition-all duration-300 outline-none select-none focus:outline-none disabled:pointer-events-none disabled:cursor-default disabled:opacity-50;
+		@apply dark:bg-secondary bg-primary dark:text-primary text-secondary dark:border-secondary border-primary cursor-pointer rounded-full border px-5 py-3 transition-all duration-300 outline-none select-none;
 	}
-	.hold {
-		@apply relative overflow-hidden;
+	.btn:hover {
+		@apply dark:bg-primary bg-secondary dark:text-secondary text-primary;
 	}
-	.hold.btn {
-		@apply hover:bg-secondary hover:text-primary bg-secondary text-primary;
+	.btn:disabled {
+		@apply dark:bg-secondary/0 bg-primary/0 dark:text-secondary text-primary pointer-events-none cursor-default opacity-40;
 	}
-	.hold.btn:disabled {
-		@apply invert;
+	.btn.hold {
+		@apply dark:text-secondary text-primary relative overflow-hidden bg-transparent;
 	}
-	.hold .progress {
-		@apply bg-primary absolute top-0 bottom-0 left-0 z-0 h-full w-0;
+	.btn.hold:hover {
+		@apply dark:text-secondary text-primary;
 	}
-	.outline {
-		@apply bg-primary/0! text-primary! hover:bg-primary/5!;
+	.btn.hold:disabled {
+		@apply dark:text-secondary text-primary;
 	}
-	.outline:disabled {
-		@apply border-primary/50!;
+	.btn.hold .progress {
+		@apply bg-secondary absolute top-0 bottom-0 left-0 z-0 h-full w-0 mix-blend-difference;
+	}
+	.btn.outline {
+		@apply bg-primary/0! dark:text-secondary! text-primary!;
+	}
+	.btn.outline:hover {
+		@apply dark:bg-secondary/5! bg-primary/5!;
 	}
 
 	/* Input components */
 	.input {
-		@apply border-primary/20 focus:ring-primary/20 ring-offset-secondary appearance-none rounded-full border bg-transparent px-5 py-3 ring-offset-2 outline-none focus:ring-2 focus:outline-none;
+		@apply dark:border-secondary/20 border-primary/20 dark:ring-offset-primary dark:text-secondary text-primary ring-offset-secondary appearance-none rounded-full border bg-transparent px-5 py-3 ring-offset-2 outline-none focus:ring-2 focus:outline-none;
 		&:-webkit-autofill,
 		&:-webkit-autofill:hover,
 		&:-webkit-autofill:focus {
-			-webkit-text-fill-color: var(--color-primary);
-			-webkit-box-shadow: 0 0 0px 1000px var(--color-secondary) inset;
+			-webkit-text-fill-color: var(--color-neutral) !important;
+			-webkit-box-shadow: 0 0 0px 1000px transparent inset;
 			transition: background-color 5000s ease-in-out 0s;
 		}
+	}
+	.input:focus {
+		@apply dark:ring-secondary/20 ring-primary/20;
 	}
 }
 

@@ -1,8 +1,5 @@
 <script>
-	import { onMount } from 'svelte';
-
-	export let outline = false;
-	export let disabled = false;
+	let { outline = false, disabled = false, onclick, children } = $props();
 </script>
 
-<button class="btn {outline && 'outline'}" {disabled} on:click><slot /></button>
+<button class="btn {outline && 'outline'}" {disabled} {onclick}>{@render children()}</button>

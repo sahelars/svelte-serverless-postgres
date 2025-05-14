@@ -18,4 +18,12 @@ async function handleRoutes({ event, resolve }) {
 	return resolve(event);
 }
 
-export const handle = sequence(blockSuspiciousRequests, handleRoutes);
+export const handleTheme = async ({ event, resolve }) => {
+	const theme = event.cookies.get('theme') || 'dark';
+	const response = await resolve(event, {
+		transformPageChunk: ({ html }) => html.replace('data-theme=""', `data-theme="${theme}"`)
+	});
+	return response;
+};
+
+export const handle = sequence(blockSuspiciousRequests, handleRoutes, handleTheme);

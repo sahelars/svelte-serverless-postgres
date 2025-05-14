@@ -1,8 +1,7 @@
 <script>
-	import { onMount } from 'svelte';
 	import Button from '$lib/components/Button.svelte';
 
-	let isSubmitting = false;
+	let isSubmitting = $state(false);
 
 	async function handleLogout() {
 		if (isSubmitting) return;
@@ -39,5 +38,11 @@
 		<a href="https://neon.tech" target="_blank" rel="noopener noreferrer">neon.tech</a> to read the database
 		docs
 	</p>
-	<Button animation on:complete={handleLogout}>Hold to logout</Button>
+	<Button
+		classname="w-[218px]"
+		animation
+		text="Hold to logout"
+		errorText="Try again"
+		oncomplete={handleLogout}
+	/>
 </div>

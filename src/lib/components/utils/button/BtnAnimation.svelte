@@ -1,36 +1,61 @@
 <script>
-	import { onMount, onDestroy } from 'svelte';
-	import { createEventDispatcher } from 'svelte';
+	import Loading from '$lib/components/Loading.svelte';
 
-	const dispatch = createEventDispatcher();
+	let { classname, text, errorText, duration, disabled, oncomplete } = $props();
 
-	export let disabled = false;
-	export let duration = 2000;
-
-	let isHolding = false;
-	let holdProgress = 0;
-	let holdInterval;
-	let showProgress = false;
+	let currentButtonText = $state(text);
+	let isHolding = $state(false);
+	let holdProgress = $state(0);
+	let showProgress = $state(false);
+	let animationFrame = $state(null);
+	let isSubmitting = $state(false);
+	let textFrames = $state([]);
+	let isError = $state(false);
+	let showLoading = $state(false);
 
 	function startHolding() {
-		if (disabled) return;
+		if (disabled && isError) return;
 		isHolding = true;
 		showProgress = true;
 		holdProgress = 0;
 		const startTime = Date.now();
-		holdInterval = setInterval(() => {
+		function update() {
 			const elapsed = Date.now() - startTime;
 			holdProgress = Math.min(elapsed / duration, 1);
-			if (holdProgress >= 1) {
-				clearInterval(holdInterval);
+			if (holdProgress < 1) {
+				animationFrame = requestAnimationFrame(update);
+			} else {
 				isHolding = false;
-				dispatch('complete');
+				oncomplete?.();
+				showLoading = true;
+				textFrames = [
+					setTimeout(() => {
+						showLoading = false;
+						holdProgress = 0;
+						showProgress = false;
+						disabled = true;
+						isError = true;
+						showLoading = false;
+						currentButtonText = errorText;
+						document.querySelector('form')?.reset();
+					}, 2000),
+					setTimeout(() => {
+						holdProgress = 0;
+						showProgress = false;
+						isError = false;
+						currentButtonText = text;
+					}, 4600)
+				];
 			}
-		}, 16);
+		}
+		animationFrame = requestAnimationFrame(update);
 	}
 
 	function stopHolding() {
-		if (holdInterval) clearInterval(holdInterval);
+		if (animationFrame !== null) {
+			cancelAnimationFrame(animationFrame);
+			animationFrame = null;
+		}
 		isHolding = false;
 		if (holdProgress < 1) {
 			holdProgress = 0;
@@ -38,27 +63,62 @@
 		}
 	}
 
-	onDestroy(() => {
-		if (holdInterval) clearInterval(holdInterval);
+	$effect(() => {
+		const form = document.querySelector('form');
+		checkFormValues();
+		function checkFormValues() {
+			if (!form) return;
+			const formData = new FormData(form);
+			if (formData.get('username') && formData.get('password')) {
+				disabled = false;
+			} else {
+				disabled = true;
+			}
+		}
+		function handleInput() {
+			checkFormValues();
+		}
+		form?.addEventListener('input', handleInput);
+		return () => {
+			form?.removeEventListener('input', handleInput);
+			if (animationFrame !== null) {
+				cancelAnimationFrame(animationFrame);
+			}
+			textFrames.forEach(clearTimeout);
+		};
 	});
 </script>
 
 <button
-	class="btn hold"
+	class={`btn hold ${classname}`}
 	type="button"
-	on:mousedown={startHolding}
-	on:mouseup={stopHolding}
-	on:mouseleave={stopHolding}
-	on:touchstart|preventDefault={startHolding}
-	on:touchend|preventDefault={stopHolding}
-	on:touchcancel|preventDefault={stopHolding}
-	{disabled}
+	onmousedown={startHolding}
+	onmouseup={stopHolding}
+	onmouseleave={stopHolding}
+	ontouchstart={(e) => {
+		e.preventDefault();
+		startHolding();
+	}}
+	ontouchend={(e) => {
+		e.preventDefault();
+		stopHolding();
+	}}
+	ontouchcancel={(e) => {
+		e.preventDefault();
+		stopHolding();
+	}}
+	disabled={disabled || isError}
 >
 	{#if showProgress}
-		<!-- svelte-ignore element_invalid_self_closing_tag -->
-		<div class="progress" style="width: {holdProgress * 100}%" />
+		<div
+			class="progress"
+			style="width: {holdProgress * 100}%; transition: width 0.1s linear;"
+		></div>
 	{/if}
-	<span class="mix-blend-exclusion">
-		<slot />
+	<span class="flex items-center justify-center">
+		<span class={`${!showLoading ? 'block opacity-100' : 'hidden opacity-0'}`}
+			>{currentButtonText}</span
+		>
+		<span class={`${showLoading ? 'block opacity-100' : 'hidden opacity-0'}`}><Loading /></span>
 	</span>
 </button>

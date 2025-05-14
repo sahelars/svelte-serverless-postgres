@@ -16,5 +16,5 @@
 			rel="noopener noreferrer">svelte-serverless-postgres</a
 		> to read the documentation
 	</p>
-	<Button on:click={() => (window.location.href = '/login')}>Get started</Button>
+	<Button onclick={() => (window.location.href = '/login')}>Get started</Button>
 </div>

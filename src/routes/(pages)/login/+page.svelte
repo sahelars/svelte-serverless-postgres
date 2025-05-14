@@ -1,28 +1,13 @@
 <script>
-	import { onMount } from 'svelte';
 	import Button from '$lib/components/Button.svelte';
 
-	let username = '';
-	let password = '';
-	let isSubmitting = false;
-	let buttonDefaultText = 'Hold to login';
-	let buttonText = buttonDefaultText;
-	let buttonErrorText = 'Try again';
+	let username = $state('');
+	let password = $state('');
+	let isSubmitting = $state(false);
 
 	async function handleLogin() {
 		if (isSubmitting) return;
 		isSubmitting = true;
-		const animations = [
-			setTimeout(() => {
-				buttonText = buttonText + '.';
-			}, 200),
-			setTimeout(() => {
-				buttonText = buttonText + '.';
-			}, 400),
-			setTimeout(() => {
-				buttonText = buttonText + '.';
-			}, 600)
-		];
 		try {
 			const form = document.querySelector('form');
 			const formData = new FormData(form);
@@ -33,33 +18,19 @@
 			});
 
 			if (!response.ok) {
-				animations.forEach(clearTimeout);
 				buttonText = buttonErrorText;
 			} else {
 				const { location, type } = await response.json();
 				if (type === 'redirect') {
 					window.location.href = location;
 					return;
-				} else {
-					setTimeout(() => {
-						animations.forEach(clearTimeout);
-						buttonText = buttonErrorText;
-						username = '';
-						password = '';
-					}, 800);
 				}
 			}
 		} catch (error) {
-			animations.forEach(clearTimeout);
 			console.error('Error submitting form:', error);
 			buttonText = buttonErrorText;
 		} finally {
 			isSubmitting = false;
-			setTimeout(() => {
-				buttonText = buttonDefaultText;
-				username = '';
-				password = '';
-			}, 2000);
 		}
 	}
 </script>
@@ -91,9 +62,13 @@
 		/>
 	</form>
 	<div class="grid w-full max-w-md grid-cols-2 gap-3">
-		<Button outline on:click={() => (window.location.href = '/')}>Back</Button>
-		<Button animation disabled={!username || !password} on:complete={handleLogin}>
-			{buttonText}
-		</Button>
+		<Button outline onclick={() => (window.location.href = '/')}>Back</Button>
+		<Button
+			animation
+			text="Hold to login"
+			errorText="Try again"
+			disabled={true}
+			oncomplete={handleLogin}
+		/>
 	</div>
 </div>

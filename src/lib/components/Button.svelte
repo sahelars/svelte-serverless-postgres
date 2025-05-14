@@ -1,28 +1,33 @@
 <script>
-	import { onMount } from 'svelte';
 	import Btn from '$lib/components/utils/button/Btn.svelte';
 	import BtnAnimation from '$lib/components/utils/button/BtnAnimation.svelte';
 
-	export let animation = false;
-	export let outline = false;
-	export let duration = 2000;
-	export let disabled = true;
+	let {
+		classname = '',
+		animation = false,
+		text = 'Hold',
+		errorText = 'Error',
+		duration = 2000,
+		outline = false,
+		disabled = false,
+		onclick,
+		oncomplete,
+		children
+	} = $props();
 
-	onMount(() => {
-		if (!('disabled' in $$props)) {
-			setTimeout(() => {
-				disabled = false;
-			}, 500);
-		}
+	let isDisabled = $state(true);
+
+	$effect(() => {
+		setTimeout(() => {
+			isDisabled = false;
+		}, 500);
 	});
 </script>
 
 {#if animation}
-	<BtnAnimation {disabled} {duration} on:complete>
-		<slot />
-	</BtnAnimation>
+	<BtnAnimation {classname} {text} {errorText} {duration} {oncomplete} {disabled} />
 {:else}
-	<Btn {outline} {disabled} on:click>
-		<slot />
+	<Btn {classname} {outline} {onclick} disabled={isDisabled || disabled}>
+		{@render children()}
 	</Btn>
 {/if}
