@@ -1,6 +1,6 @@
 # Svelte Serverless Postgres
 
-A comprehensive Svelte starter template featuring Tailwind CSS v4.0 and Neon Serverless Postgres.
+A comprehensive Svelte 5 starter template featuring Tailwind CSS v4.0 and Neon Serverless Postgres.
 
 ## Create project
 
