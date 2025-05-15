@@ -28,6 +28,6 @@
 	<BtnAnimation {classname} {text} {errorText} {duration} {oncomplete} {disabled} />
 {:else}
 	<Btn {classname} {outline} {onclick} disabled={isDisabled || disabled}>
-		{@render children()}
+		{@render children?.()}
 	</Btn>
 {/if}
