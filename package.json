@@ -1,9 +1,9 @@
 {
 	"name": "svelte-serverless-postgres",
-	"version": "0.1.6",
+	"version": "0.1.7",
 	"license": "MIT",
 	"author": "Sam Larsen",
-	"description": "A comprehensive Svelte 5starter template featuring Tailwind CSS v4.0 and Neon Serverless Postgres",
+	"description": "A comprehensive Svelte 5 starter template featuring Tailwind CSS v4.0 and Neon Serverless Postgres",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev --host",
