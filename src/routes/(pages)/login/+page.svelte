@@ -11,6 +11,8 @@
 		try {
 			const form = document.querySelector('form');
 			const formData = new FormData(form);
+			username = '';
+			password = '';
 			const response = await fetch('/login', {
 				method: 'POST',
 				headers: { accept: 'application/json' },
@@ -67,7 +69,7 @@
 			animation
 			text="Hold to login"
 			errorText="Try again"
-			disabled={true}
+			disabled={!username || !password}
 			oncomplete={handleLogin}
 		/>
 	</div>

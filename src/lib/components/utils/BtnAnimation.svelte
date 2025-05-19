@@ -8,13 +8,12 @@
 	let holdProgress = $state(0);
 	let showProgress = $state(false);
 	let animationFrame = $state(null);
-	let isSubmitting = $state(false);
 	let textFrames = $state([]);
-	let isError = $state(false);
 	let showLoading = $state(false);
+	let overrideDisabled = $state(disabled);
 
 	function startHolding() {
-		if (disabled || isError || showLoading) return;
+		if (disabled) return;
 		isHolding = true;
 		showProgress = true;
 		holdProgress = 0;
@@ -27,24 +26,20 @@
 			} else {
 				isHolding = false;
 				oncomplete?.();
+				overrideDisabled = false;
 				showLoading = true;
 				textFrames = [
 					setTimeout(() => {
+						overrideDisabled = true;
 						showLoading = false;
-						holdProgress = 0;
 						showProgress = false;
-						disabled = true;
-						isError = true;
-						showLoading = false;
+						holdProgress = 0;
 						currentButtonText = errorText;
 						document.querySelector('form')?.reset();
-					}, 2000),
+					}, 6000),
 					setTimeout(() => {
-						holdProgress = 0;
-						showProgress = false;
-						isError = false;
 						currentButtonText = text;
-					}, 4600)
+					}, 9000)
 				];
 			}
 		}
@@ -92,22 +87,11 @@
 <button
 	class={`btn hold ${classname} ${showLoading ? 'cursor-default' : ''}`}
 	type="button"
-	onmousedown={startHolding}
-	onmouseup={stopHolding}
-	onmouseleave={stopHolding}
-	ontouchstart={(e) => {
-		e.preventDefault();
-		startHolding();
-	}}
-	ontouchend={(e) => {
-		e.preventDefault();
-		stopHolding();
-	}}
-	ontouchcancel={(e) => {
-		e.preventDefault();
-		stopHolding();
-	}}
-	disabled={disabled || isError}
+	onpointerdown={startHolding}
+	onpointerup={stopHolding}
+	onpointerleave={stopHolding}
+	onpointercancel={stopHolding}
+	disabled={disabled && overrideDisabled}
 >
 	{#if showProgress}
 		<div

@@ -19,7 +19,7 @@ async function handleRoutes({ event, resolve }) {
 }
 
 export const handleTheme = async ({ event, resolve }) => {
-	const theme = event.cookies.get('theme') || 'dark';
+	const theme = event.cookies.get('svelte_theme') || 'dark';
 	const response = await resolve(event, {
 		transformPageChunk: ({ html }) => html.replace('data-theme=""', `data-theme="${theme}"`)
 	});

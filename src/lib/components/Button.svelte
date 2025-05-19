@@ -1,6 +1,6 @@
 <script>
-	import Btn from '$lib/components/utils/button/Btn.svelte';
-	import BtnAnimation from '$lib/components/utils/button/BtnAnimation.svelte';
+	import Btn from '$lib/components/utils/Btn.svelte';
+	import BtnAnimation from '$lib/components/utils/BtnAnimation.svelte';
 
 	let {
 		classname = '',

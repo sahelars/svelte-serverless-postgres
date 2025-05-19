@@ -1,5 +1,7 @@
-export const sitemap = ['/', '/login', '/dashboard'];
+export const sitemap = ['/sitemap.xml'];
 
-export const utils = ['/api/logout', '/robots.txt', '/sitemap.xml'];
+export const utils = ['/api/logout', '/robots.txt'];
 
-export const all = [...sitemap, ...utils];
+export const pages = ['/', '/login', '/dashboard'];
+
+export const all = [...pages, ...sitemap, ...utils];
