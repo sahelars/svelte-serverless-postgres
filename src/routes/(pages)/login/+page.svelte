@@ -65,12 +65,6 @@
 	</form>
 	<div class="grid w-full max-w-md grid-cols-2 gap-3">
 		<Button outline onclick={() => (window.location.href = '/')}>Back</Button>
-		<Button
-			animation
-			text="Hold to login"
-			errorText="Try again"
-			disabled={!username || !password}
-			oncomplete={handleLogin}
-		/>
+		<Button animation error="Try again" disabled={!username || !password}>Hold to login</Button>
 	</div>
 </div>
