@@ -15,8 +15,8 @@ export const POST = async ({ cookies }) => {
 		}
 		cookies.delete('session', { path: '/' });
 
-		return new Response(null, { status: 200 });
+		return Response.json({ type: 'redirect', location: '/login' });
 	}
 
-	return new Response(null, { status: 401 });
+	return Response.json({ type: 'error', message: 'Not authenticated' }, { status: 401 });
 };
