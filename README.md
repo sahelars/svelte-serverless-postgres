@@ -2,6 +2,8 @@
 
 A comprehensive Svelte 5 starter template featuring Tailwind CSS v4.0 and Neon Serverless Postgres.
 
+> **Note:** This template implements session-based auth following [Lucia's session guide](https://lucia-auth.com) using Oslo libraries.
+
 ## Create project
 
 Clone the repository:
