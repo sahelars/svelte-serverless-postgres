@@ -1,9 +1,22 @@
 <script>
 	import Button from '$lib/components/Button.svelte';
+	import Loading from '$lib/components/Loading.svelte';
 
 	let username = $state('');
 	let password = $state('');
+	const buttonClickText = 'Hold to login';
+	const buttonErrorText = 'Try again';
+	let buttonText = $state(buttonClickText);
 	let isSubmitting = $state(false);
+	let errorTimeout;
+
+	function showErrorTemporarily() {
+		clearTimeout(errorTimeout);
+		buttonText = buttonErrorText;
+		errorTimeout = setTimeout(() => {
+			buttonText = buttonClickText;
+		}, 3000);
+	}
 
 	async function handleLogin() {
 		if (isSubmitting) return;
@@ -18,19 +31,16 @@
 				headers: { accept: 'application/json' },
 				body: formData
 			});
-
-			if (!response.ok) {
-				buttonText = buttonErrorText;
+			const result = await response.json();
+			if (result.type === 'redirect') {
+				window.location.href = result.location;
+				return;
 			} else {
-				const { location, type } = await response.json();
-				if (type === 'redirect') {
-					window.location.href = location;
-					return;
-				}
+				showErrorTemporarily();
 			}
 		} catch (error) {
 			console.error('Error submitting form:', error);
-			buttonText = buttonErrorText;
+			showErrorTemporarily();
 		} finally {
 			isSubmitting = false;
 		}
@@ -65,12 +75,15 @@
 	</form>
 	<div class="grid w-full max-w-md grid-cols-2 gap-3">
 		<Button outline onclick={() => (window.location.href = '/')}>Back</Button>
-		<Button
-			animation
-			text="Hold to login"
-			errorText="Try again"
-			disabled={!username || !password}
-			oncomplete={handleLogin}
-		/>
+		<Button animation onanimationend={() => handleLogin()} disabled={!username || !password}>
+			<span class="relative inline-flex items-center justify-center">
+				<span class:invisible={isSubmitting}>{buttonText}</span>
+				{#if isSubmitting}
+					<span class="absolute inset-0 flex items-center justify-center">
+						<Loading size={20} />
+					</span>
+				{/if}
+			</span>
+		</Button>
 	</div>
 </div>

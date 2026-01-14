@@ -1,7 +1,20 @@
 <script>
 	import Button from '$lib/components/Button.svelte';
+	import Loading from '$lib/components/Loading.svelte';
 
+	const buttonClickText = 'Hold to logout';
+	const buttonErrorText = 'Try again';
+	let buttonText = $state(buttonClickText);
 	let isSubmitting = $state(false);
+	let errorTimeout;
+
+	function showErrorTemporarily() {
+		clearTimeout(errorTimeout);
+		buttonText = buttonErrorText;
+		errorTimeout = setTimeout(() => {
+			buttonText = buttonClickText;
+		}, 3000);
+	}
 
 	async function handleLogout() {
 		if (isSubmitting) return;
@@ -10,13 +23,15 @@
 			let response = await fetch('/api/logout', {
 				method: 'POST'
 			});
-			if (!response.ok) {
-				console.error('Error logging out');
+			const result = await response.json();
+			if (result.type === 'redirect') {
+				window.location.href = result.location;
 			} else {
-				window.location.href = '/login';
+				showErrorTemporarily();
 			}
 		} catch (error) {
-			console.error('Error logging out');
+			console.error('Error logging out:', error);
+			showErrorTemporarily();
 		} finally {
 			isSubmitting = false;
 		}
@@ -38,11 +53,16 @@
 		<a href="https://neon.tech" target="_blank" rel="noopener noreferrer">neon.tech</a> to read the database
 		docs
 	</p>
-	<Button
-		classname="w-[218px]"
-		animation
-		text="Hold to logout"
-		errorText="Try again"
-		oncomplete={handleLogout}
-	/>
+	<div>
+		<Button animation onanimationend={() => handleLogout()} disabled={isSubmitting}>
+			<span class="relative inline-flex items-center justify-center">
+				<span class:invisible={isSubmitting}>{buttonText}</span>
+				{#if isSubmitting}
+					<span class="absolute inset-0 flex items-center justify-center">
+						<Loading size={20} />
+					</span>
+				{/if}
+			</span>
+		</Button>
+	</div>
 </div>
